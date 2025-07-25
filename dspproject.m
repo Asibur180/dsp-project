@@ -718,8 +718,275 @@ for i = 1:length(normalized_lung_data)
     fprintf('  Extracted Lung Sound Features for: %s\n', current_filename);
 end
 fprintf('Finished lung sound feature extraction.\n\n');
+% --- 3.1 Data Preparation for Machine Learning (Lung Sounds Example) ---
+% This section creates a dummy annotations table if one doesn't already exist.
+% REPLACE THIS WITH YOUR ACTUAL ANNOTATION LOADING LOGIC FOR REAL DATA!
+
+% IMPORTANT: Ensure 'data_dir' is defined and points to your project's main data folder.
+% For example: data_dir = 'C:\Users\YourUsername\Documents\VirtualStethoscopeProject\Data\';
+% data_dir = '/Users/YourUsername/Documents/VirtualStethoscopeProject/Data/';
+% If data_dir is not defined, define it here:
+% if ~exist('data_dir', 'var') || isempty(data_dir)
+%     data_dir = 'YOUR_PATH_TO_YOUR_DATA_FOLDER_HERE'; % <--- SET YOUR ACTUAL PATH HERE
+%     if ~isfolder(data_dir)
+%         error('Data directory not found. Please set `data_dir` to a valid path.');
+%     end
+% end
+
+
+if ~exist('annotations_table', 'var')
+    warning('Dummy annotations_table created. Replace with your actual annotation loading.');
+    
+    % The header row below defines the column names for the table.
+    % Ensure 'filename' is spelled EXACTLY as shown if you are using this dummy data.
+    dummy_csv_content = {'filename,crackle_present,wheeze_present,quality'; % <--- THIS IS THE LINE WITH 'filename'
+                         '101_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '102_1b1_Al_sc_mc_AKGC417L.wav,1,0,crackles';
+                         '103_2b2_Ar_mc_AKGC417L.wav,0,1,wheezes';
+                         '104_1b1_Al_sc_Meditron.wav,1,1,both';
+                         '105_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '106_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '107_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '108_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '109_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '110_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '111_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '112_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '113_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '114_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '115_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '116_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '117_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '118_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '119_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '120_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '121_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '122_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '123_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '124_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '125_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '126_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '127_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '128_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '129_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '130_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '131_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '132_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '133_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '134_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '135_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '136_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '137_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '138_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '139_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '140_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '141_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '142_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '143_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '144_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '145_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '146_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '147_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '148_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '149_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '150_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '151_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '152_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '153_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '154_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '155_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '156_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '157_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '158_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '159_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '160_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '161_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '162_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '163_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '164_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '165_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '166_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '167_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '168_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '169_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '170_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '171_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '172_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '173_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '174_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '175_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '176_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '177_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '178_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '179_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '180_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '181_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '182_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '183_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '184_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '185_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '186_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '187_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '188_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '189_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '190_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '191_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '192_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '193_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '194_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '195_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '196_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '197_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '198_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '199_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '200_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '201_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '202_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '203_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '204_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '205_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '206_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '207_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '208_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '209_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '210_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '211_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '212_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '213_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '214_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '215_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '216_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '217_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '218_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '219_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '220_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '221_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '222_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '223_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '224_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '225_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '226_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '227_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '228_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '229_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '230_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '231_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '232_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '233_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '234_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '235_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '236_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '237_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '238_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '239_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '240_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '241_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '242_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '243_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '244_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '245_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '246_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '247_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '248_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '249_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '250_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '251_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '252_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '253_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '254_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '255_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '256_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '257_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '258_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '259_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '260_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '261_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '262_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '263_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '264_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '265_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '266_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '267_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '268_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '269_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '270_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '271_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '272_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '273_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '274_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '275_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '276_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '277_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '278_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '279_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '280_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '281_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '282_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '283_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '284_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '285_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '286_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '287_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '288_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '289_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '290_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '291_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '292_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '293_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '294_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '295_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '296_2b2_Ar_mc_AKGC417L.wav,1,1,both';
+                         '297_1b1_Al_sc_Meditron.wav,0,0,normal';
+                         '298_2b2_Ar_mc_AKGC417L.wav,1,0,crackles';
+                         '299_1b1_Al_sc_mc_AKGC417L.wav,0,1,wheezes';
+                         '300_2b2_Ar_mc_AKGC417L.wav,1,1,both'
+                         }; % Extended dummy data to 300 entries
+
+    
+    % Assuming data_dir is defined
+    dummy_label_csv_path = fullfile(data_dir, 'LungSounds', 'dummy_annotations.csv');
+    
+    % Ensure the directory exists before trying to write the file
+    lung_sounds_data_folder = fullfile(data_dir, 'LungSounds');
+    if ~isfolder(lung_sounds_data_folder)
+        mkdir(lung_sounds_data_folder);
+    end
+
+    fid = fopen(dummy_label_csv_path, 'w');
+    if fid == -1
+        error('Could not open file for writing: %s. Check permissions or path.', dummy_label_csv_path);
+    end
+    for k = 1:numel(dummy_csv_content)
+        fprintf(fid, '%s\n', dummy_csv_content{k});
+    end
+    fclose(fid);
+    
+    annotations_table = readtable(dummy_label_csv_path); 
+end
 % --- Consolidating Heart Sound Features per File ---
 fprintf('--- Consolidating Heart Sound Features per File ---\n');
+
+% Load Real Heart Sound Annotations once before the loop
+fprintf('\n--- Loading Real Heart Sound Annotations ---\n');
+
+% Path to the downloaded training set CSV. Assume it's in data_dir for now.
+% ADJUST THIS PATH IF YOUR 'Online Appendix_training set.csv' IS IN A SUBFOLDER!
+real_heart_annotations_filepath = fullfile(data_dir, 'Online Appendix_training set.csv'); 
+
+heart_annotations_raw = []; % Initialize as empty
+if exist(real_heart_annotations_filepath, 'file')
+    heart_annotations_raw = readtable(real_heart_annotations_filepath);
+    % Add this line immediately after heart_annotations_raw = readtable(real_heart_annotations_filepath);
+fprintf('Actual column names in heart_annotations_raw table:\n');
+disp(heart_annotations_raw.Properties.VariableNames{5});
+    fprintf('Successfully loaded heart annotations from: %s\n', real_heart_annotations_filepath);
+    % Optional: Display actual column names to confirm (already did this step)
+    % fprintf('Actual column names in heart_annotations_raw table:\n');
+    % disp(heart_annotations_raw.Properties.VariableNames);
+else
+    warning('Real heart sound annotations file not found at %s. Heart sound labels will be "unmatched".', real_heart_annotations_filepath);
+end
+
 
 % Determine all unique feature names from the structures (e.g., Energy_LowFreq, SpectralFlatness)
 all_heart_feature_names = {};
@@ -739,12 +1006,12 @@ Y_heart_combined = cell(num_heart_files, 1);
 heart_file_lookup = cell(num_heart_files, 1);
 
 for i = 1:num_heart_files
-    current_filename = all_heart_filenames{i};
+    current_filename_full = all_heart_filenames{i}; % Full filename like 'a0001.wav'
     current_file_segments = all_heart_segment_features{i}; % This is an array of structs
-    heart_file_lookup{i} = current_filename;
+    heart_file_lookup{i} = current_filename_full; % Store full filename for lookup
 
-    if isempty(current_file_segments)
-        fprintf('  No segments or features for Heart Sound: %s. Filling with NaNs.\n', current_filename);
+    if isempty(current_file_segments) || (isstruct(current_file_segments) && all(cellfun(@(x) all(isnan(struct2array(x))), {current_file_segments}))) % Check if segments are empty or all NaNs
+        fprintf('  No valid segments or features for Heart Sound: %s. Filling with NaNs.\n', current_filename_full);
         X_heart_combined(i, :) = NaN;
         Y_heart_combined{i} = 'UNLABELED'; % Or a specific 'no_detection' label
         continue;
@@ -769,20 +1036,56 @@ for i = 1:num_heart_files
     % Concatenate mean and std dev to form the final feature vector for this file
     X_heart_combined(i, :) = [mean_features, std_features];
     
-    % Assign a dummy label for now (you'll need to load real heart sound labels later)
-    % For demonstration, let's just label all as 'normal_heart'
-    Y_heart_combined{i} = 'normal_heart'; % <<< REPLACE WITH ACTUAL LABEL LOADING LATER
+    % --- NEW LABEL ASSIGNMENT LOGIC FOR HEART SOUNDS (with corrected column names) ---
+    % Extract the 'Challenge record name' part (e.g., 'a0001' from 'a0001.wav')
+    [~, record_name, ~] = fileparts(current_filename_full); 
+
+    if ~isempty(heart_annotations_raw)
+        % Find the matching row in the loaded annotations table using the CORRECTED COLUMN NAME
+        idx_anno = find(strcmp(heart_annotations_raw.ChallengeRecordName, record_name), 1);
+
+        if ~isempty(idx_anno)
+            % Extract the binary class label (-1 or 1) using the CORRECTED COLUMN NAME
+           raw_label = heart_annotations_raw.Class__1_normal1_abnormal_(idx_anno);
+            
+            % Convert -1 to 'normal' and 1 to 'abnormal'
+            if raw_label == -1
+                Y_heart_combined{i} = 'normal';
+            elseif raw_label == 1
+                Y_heart_combined{i} = 'abnormal';
+            else
+                % Handle unexpected values if any
+                Y_heart_combined{i} = 'unknown_label';
+                warning('Unexpected heart label value: %d for %s\n', raw_label, current_filename_full);
+            end
+        else
+            Y_heart_combined{i} = 'unmatched';
+            % fprintf('  Warning: No annotation found for heart file: %s\n', current_filename_full); % Uncomment for more verbosity
+        end
+    else
+        Y_heart_combined{i} = 'unmatched_no_table'; % Label if annotation table itself wasn't loaded
+    end
+    % --- END NEW LABEL ASSIGNMENT LOGIC ---
     
-    fprintf('  Processed Heart Sound: %s, Features size: %s\n', current_filename, mat2str(size(X_heart_combined(i,:))));
+    fprintf('  Processed Heart Sound: %s, Features size: %s, Label: %s\n', current_filename_full, mat2str(size(X_heart_combined(i,:))), Y_heart_combined{i});
 end
 
-% Remove any rows that ended up with NaNs (e.g., files with no valid segments)
-valid_heart_rows = ~any(isnan(X_heart_combined), 2) & ~strcmp(Y_heart_combined, 'UNLABELED');
+% Remove any rows that ended up with NaNs or 'UNLABELED'
+valid_heart_rows = ~any(isnan(X_heart_combined), 2) & ...
+                   ~strcmp(Y_heart_combined, 'UNLABELED') & ...
+                   ~strcmp(Y_heart_combined, 'unmatched') & ...
+                   ~strcmp(Y_heart_combined, 'unknown_label') & ...
+                   ~strcmp(Y_heart_combined, 'unmatched_no_table');
+
 X_heart_combined = X_heart_combined(valid_heart_rows, :);
 Y_heart_combined = Y_heart_combined(valid_heart_rows);
 heart_file_lookup = heart_file_lookup(valid_heart_rows);
 
 fprintf('Consolidated Heart Feature matrix size: %s, Label vector size: %s\n', mat2str(size(X_heart_combined)), mat2str(size(Y_heart_combined)));
+
+% ... (The rest of your code, including Lung Sound preparation and export, should follow) .
+
+% ... (The rest of your code, including Lung Sound preparation and export, should follow) ...
 % --- Preparing Lung Sound Features per File ---
 fprintf('\n--- Preparing Lung Sound Features per File ---\n');
 
@@ -844,82 +1147,32 @@ Y_lung_combined = Y_lung_combined(valid_lung_rows);
 lung_file_lookup = lung_file_lookup(valid_lung_rows);
 
 fprintf('Consolidated Lung Feature matrix size: %s, Label vector size: %s\n', mat2str(size(X_lung_combined)), mat2str(size(Y_lung_combined)));
-% --- Lung Sound Classification Workflow ---
-fprintf('\n--- Starting Lung Sound Classification Workflow ---\n');
+% --- Exporting Features and Labels to CSV for Python ---
+fprintf('\n--- Exporting Features and Labels to CSV for Python ---\n');
 
-if size(X_lung_combined, 1) < 2 || length(unique(Y_lung_combined)) < 2
-    fprintf('Not enough data or classes for Lung Sound classification. Skipping.\n');
-else
-    % Create a stratified partition for training and testing
-    cv_lung = cvpartition(Y_lung_combined, 'Holdout', 0.2); % 80% train, 20% test
-    idxTrain_lung = training(cv_lung, 1);
-    idxTest_lung = test(cv_lung, 1);
-
-    X_train_lung = X_lung_combined(idxTrain_lung, :);
-    Y_train_lung = Y_lung_combined(idxTrain_lung);
-    X_test_lung = X_lung_combined(idxTest_lung, :);
-    Y_test_lung = Y_lung_combined(idxTest_lung);
-
-    fprintf('Lung Data Split: Training=%d, Test=%d samples.\n', size(X_train_lung, 1), size(X_test_lung, 1));
-
-    % Train a K-Nearest Neighbors (KNN) classifier
-    fprintf('Training KNN model for Lung Sounds...\n');
-    Mdl_lung = fitcknn(X_train_lung, Y_train_lung, 'NumNeighbors', 5, 'Standardize', true);
-    fprintf('KNN Lung Model trained.\n');
-
-    % Predict on the test set
-    Y_pred_lung = predict(Mdl_lung, X_test_lung);
-
-    % Evaluate performance
-    accuracy_lung = sum(strcmp(Y_pred_lung, Y_test_lung)) / length(Y_test_lung);
-    fprintf('Lung Sound Classification Accuracy: %.2f%%\n', accuracy_lung * 100);
-
-    % Display Confusion Matrix
-    figure('Name', 'Lung Sound Confusion Matrix');
-    cm_lung = confusionchart(Y_test_lung, Y_pred_lung);
-    title('Lung Sound Classification Confusion Matrix');
-    
-    % Save the trained model (optional)
-    % save('Mdl_lung.mat', 'Mdl_lung');
-    % fprintf('Lung sound classification model saved to Mdl_lung.mat\n');
+export_dir = fullfile(data_dir, 'ML_Exports'); % Create a subfolder for exports
+if ~isfolder(export_dir)
+    mkdir(export_dir);
 end
-% --- Heart Sound Classification Workflow ---
-fprintf('\n--- Starting Heart Sound Classification Workflow ---\n');
 
-% Check if there's enough data and distinct classes
-if size(X_heart_combined, 1) < 2 || length(unique(Y_heart_combined)) < 2
-    fprintf('Not enough data or classes for Heart Sound classification. Skipping.\n');
-else
-    % Create a stratified partition for training and testing
-    cv_heart = cvpartition(Y_heart_combined, 'Holdout', 0.2);
-    idxTrain_heart = training(cv_heart, 1);
-    idxTest_heart = test(cv_heart, 1);
+% 1. Lung Sounds
+lung_features_filepath = fullfile(export_dir, 'lung_features.csv');
+lung_labels_filepath = fullfile(export_dir, 'lung_labels.csv');
 
-    X_train_heart = X_heart_combined(idxTrain_heart, :);
-    Y_train_heart = Y_heart_combined(idxTrain_heart);
-    X_test_heart = X_heart_combined(idxTest_heart, :);
-    Y_test_heart = Y_heart_combined(idxTest_heart);
+writematrix(X_lung_combined, lung_features_filepath);
+writecell(Y_lung_combined, lung_labels_filepath); % Use writecell for cell arrays of strings
 
-    fprintf('Heart Data Split: Training=%d, Test=%d samples.\n', size(X_train_heart, 1), size(X_test_heart, 1));
+fprintf('Lung features exported to: %s\n', lung_features_filepath);
+fprintf('Lung labels exported to: %s\n', lung_labels_filepath);
 
-    % Train a K-Nearest Neighbors (KNN) classifier
-    fprintf('Training KNN model for Heart Sounds...\n');
-    Mdl_heart = fitcknn(X_train_heart, Y_train_heart, 'NumNeighbors', 5, 'Standardize', true);
-    fprintf('KNN Heart Model trained.\n');
+% 2. Heart Sounds
+heart_features_filepath = fullfile(export_dir, 'heart_features.csv');
+heart_labels_filepath = fullfile(export_dir, 'heart_labels.csv');
 
-    % Predict on the test set
-    Y_pred_heart = predict(Mdl_heart, X_test_heart);
+writematrix(X_heart_combined, heart_features_filepath);
+writecell(Y_heart_combined, heart_labels_filepath); % Use writecell for cell arrays of strings
 
-    % Evaluate performance
-    accuracy_heart = sum(strcmp(Y_pred_heart, Y_test_heart)) / length(Y_test_heart);
-    fprintf('Heart Sound Classification Accuracy: %.2f%%\n', accuracy_heart * 100);
+fprintf('Heart features exported to: %s\n', heart_features_filepath);
+fprintf('Heart labels exported to: %s\n', heart_labels_filepath);
 
-    % Display Confusion Matrix
-    figure('Name', 'Heart Sound Confusion Matrix');
-    cm_heart = confusionchart(Y_test_heart, Y_pred_heart);
-    title('Heart Sound Classification Confusion Matrix');
-    
-    % Save the trained model (optional)
-    % save('Mdl_heart.mat', 'Mdl_heart');
-    % fprintf('Heart sound classification model saved to Mdl_heart.mat\n');
-end
+fprintf('Export complete. You can now switch to Python for ML.\n');
